@@ -1,0 +1,11 @@
+# git ignore file
+
+.*
+.#*
+\#*#
+*.pyc
+*~
+*.swp
+
+# Do include .gitignore files for subdirectories
+!.gitignore
