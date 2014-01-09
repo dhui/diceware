@@ -18,15 +18,14 @@ def roll_dice(window, options, rolls_left):
     if options.urandom:
         return URANDOM.randint(1, 6)
 
+    # print the number of rolls left
     y, x = window.getyx()
     window.clrtoeol()
     window.addstr(y, x, str(rolls_left))
     window.move(y, x)
 
-    ch = -1
     start_time = time.time()
-    while ch == -1:
-        ch = window.getch()
+    window.getch()  # block until a key is pressed
     stop_time = time.time()
 
     delta = abs(stop_time - start_time)  # TODO: use a monotonically increasing clock time (available in Python 3.3)
@@ -53,7 +52,7 @@ def generate_passphrases(window, options):
 
         words = []
         for word_n in xrange(options.num_words):
-            word_index = 0  # Accumulator for the die roles per word
+            word_index = 0  # Accumulator for the die rolls per word
             for dice_n in xrange(NUM_DIE_ROLLS_PER_WORD):
                 word_index += (10 ** dice_n) * roll_dice(window, options, rolls_left)
                 rolls_left -= 1
@@ -65,7 +64,6 @@ def generate_passphrases(window, options):
 
         window.addstr("Generated passphrase: %s\n" % " ".join(words))
         window.addstr("Do you want to generate another password? [y/n]")
-        window.nodelay(False)
         user_input = None
         while True:
             user_input = unichr(window.getch()).lower()
@@ -74,7 +72,6 @@ def generate_passphrases(window, options):
                 window.insstr(y, x, user_input)
                 break
 
-        window.nodelay(True)
         generate_passphrases = user_input == "y"
         window.addstr("\n")
 
