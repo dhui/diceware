@@ -40,7 +40,12 @@ def roll_dice(window, options, rolls_left):
     stop_time = get_time()
 
     delta = abs(stop_time - start_time)  # TODO: use a monotonically increasing clock time (available in Python 3.3)
-    return (int(delta * 1000000) % 6) + 1  # Use the microsecond precision
+    delta_microseconds = (delta - int(delta)) * 1000000
+    # Fraction should always be between [0, 1)
+    # Using the last 3 digits which strikes a good balance between more digits (more digits means more even distribution across buckets)
+    # and delta time precision (higher precision, i.e. fewer digits, means more randomness and less keypress cadence)
+    fraction = float(delta_microseconds % 1000) / 999
+    return int(fraction * 6) + 1
 
 
 def generate_passphrases(window, options):
