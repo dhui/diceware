@@ -1,6 +1,7 @@
 import argparse
 import curses
 import random
+import sys
 import time
 
 import word_lookups
@@ -9,6 +10,16 @@ __version__ = "0.1.0"
 
 URANDOM = random.SystemRandom()
 NUM_DIE_ROLLS_PER_WORD = 5  # Diceware does 5 die rolls per word
+
+# Declares get_time() as a method that gets the time with microsecond precision across all platforms.
+# Code from Python's timeit module
+# http://hg.python.org/cpython/file/2.7/Lib/timeit.py
+if sys.platform == "win32":
+    # On Windows, the best timer is time.clock()
+    get_time = time.clock
+else:
+    # On most other platforms the best timer is time.time()
+    get_time = time.time
 
 
 def roll_dice(window, options, rolls_left):
@@ -24,9 +35,9 @@ def roll_dice(window, options, rolls_left):
     window.addstr(y, x, str(rolls_left))
     window.move(y, x)
 
-    start_time = time.time()
+    start_time = get_time()
     window.getch()  # block until a key is pressed
-    stop_time = time.time()
+    stop_time = get_time()
 
     delta = abs(stop_time - start_time)  # TODO: use a monotonically increasing clock time (available in Python 3.3)
     return (int(delta * 1000000) % 6) + 1  # Use the microsecond precision
