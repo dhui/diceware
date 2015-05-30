@@ -44,7 +44,7 @@ def roll_dice(window, options, rolls_left):
     # Fraction should always be between [0, 1)
     # Using the last 3 digits which strikes a good balance between more digits (more digits means more even distribution across buckets)
     # and delta time precision (higher precision, i.e. fewer digits, means more randomness and less keypress cadence)
-    fraction = float(delta_microseconds % 1000) / 999
+    fraction = float(delta_microseconds % 1000) / 1000
     return int(fraction * 6) + 1
 
 
