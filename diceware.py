@@ -6,7 +6,7 @@ import time
 
 import word_lookups
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 URANDOM = random.SystemRandom()
 NUM_DIE_ROLLS_PER_WORD = 5  # Diceware does 5 die rolls per word
