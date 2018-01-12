@@ -42,7 +42,8 @@ def roll_dice(window, options, rolls_left):
     delta = abs(stop_time - start_time)  # TODO: use a monotonically increasing clock time (available in Python 3.3)
     delta_microseconds = (delta - int(delta)) * 1000000
     # Fraction should always be between [0, 1)
-    # Using the last 3 digits which strikes a good balance between more digits (more digits means more even distribution across buckets)
+    # Using the last 3 digits which strikes a good balance between more digits
+    # (more digits means more even distribution across buckets)
     # and delta time precision (higher precision, i.e. fewer digits, means more randomness and less keypress cadence)
     fraction = float(delta_microseconds % 1000) / 1000
     return int(fraction * 6) + 1
@@ -52,8 +53,10 @@ def generate_passphrases(window, options):
     window.scrollok(True)
     window.idlok(True)
 
-    word_lookup = word_lookups.DICEWARE_WORD_LOOKUP
-    if options.beale:
+    word_lookup = word_lookups.EFF_WORD_LOOKUP
+    if options.wordlist == "diceware":
+        word_lookup = word_lookups.DICEWARE_WORD_LOOKUP
+    elif options.wordlist == "beale":
         word_lookup = word_lookups.BEALE_WORD_LOOKUP
 
     if not options.urandom:
@@ -93,10 +96,15 @@ def generate_passphrases(window, options):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generates passphrases using the Diceware method.\nSee http://world.std.com/~reinhold/diceware.html")
-    parser.add_argument("-n", "--num_words", dest="num_words", type=int, default=5, help="The number of words in the passphrase to generate")
-    parser.add_argument("--urandom", dest="urandom", action="store_true", help="Use urandom (supposedly cryptographically secure, depending on your entropy pool)")
-    parser.add_argument("--beale", dest="beale", action="store_true", help="Use Alan Beale's wordlist")
+    parser = argparse.ArgumentParser(description="Generates passphrases using the Diceware method.\n"
+                                     "See http://world.std.com/~reinhold/diceware.html")
+    parser.add_argument("-n", "--num_words", dest="num_words", type=int, default=5,
+                        help="The number of words in the passphrase to generate")
+    parser.add_argument("--urandom", dest="urandom", action="store_true",
+                        help="Use urandom (supposedly cryptographically secure, depending on your entropy pool)")
+    parser.add_argument("--wordlist", dest="wordlist", default="eff", choices=("eff", "diceware", "beale"),
+                        help="The wordlist to use. All wordlists provide the same level of security "
+                        "but different levels of usability. The default (eff) is the most usable.")
     parser.add_argument("-v", "--version", action="version", version=__version__)
 
     options = parser.parse_args()
