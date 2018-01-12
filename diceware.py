@@ -6,7 +6,7 @@ import time
 
 import word_lookups
 
-__version__ = "1.0.0"
+__version__ = "2.0.0"
 
 URANDOM = random.SystemRandom()
 NUM_DIE_ROLLS_PER_WORD = 5  # Diceware does 5 die rolls per word
@@ -70,9 +70,9 @@ def generate_passphrases(window, options):
             window.addstr("Key presses left: ")
 
         words = []
-        for word_n in xrange(options.num_words):
+        for word_n in range(options.num_words):
             word_index = 0  # Accumulator for the die rolls per word
-            for dice_n in xrange(NUM_DIE_ROLLS_PER_WORD):
+            for dice_n in range(NUM_DIE_ROLLS_PER_WORD):
                 word_index += (10 ** dice_n) * roll_dice(window, options, rolls_left)
                 rolls_left -= 1
 
@@ -85,7 +85,7 @@ def generate_passphrases(window, options):
         window.addstr("Do you want to generate another password? [y/n]")
         user_input = None
         while True:
-            user_input = unichr(window.getch()).lower()
+            user_input = chr(window.getch()).lower()
             if user_input in ("y", "n"):
                 y, x = window.getyx()
                 window.insstr(y, x, user_input)

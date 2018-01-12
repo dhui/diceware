@@ -43,14 +43,14 @@ def main():
         logger.error("gpg version (%s) is too new, it must be <= %s" % (gpg.binary_version, MAX_GPG_VERSION_STR))
         return
 
-    for wordlist_name, url in WORDLIST_URLS.iteritems():
+    for wordlist_name, url in WORDLIST_URLS.items():
         response = requests.get(url)
         data = response.text
 
         if url.endswith(".asc"):
             decrypted = gpg.decrypt(response.text)  # decrypt will verify the signature if it's not encrypted
             if decrypted.valid:
-                data = decrypted.data
+                data = decrypted.data.decode("utf8")
             else:
                 logger.warning("Skipping wordlist! Invalid signed response for wordlist: %s with url: %s" %
                                (wordlist_name, url))
@@ -62,12 +62,12 @@ def main():
             logger.warning("Skipping wordlist %s! %s entries found instead of %s" %
                            (wordlist_name, len(word_lookup), EXPECTED_WORDLIST_SIZE))
             continue
-        if len(set(word_lookup.itervalues())) != EXPECTED_WORDLIST_SIZE:
+        if len(set(word_lookup.values())) != EXPECTED_WORDLIST_SIZE:
             logger.warning("Skipping wordlist %s! %s unique words found instead of %s" %
                            (wordlist_name, len(word_lookup), EXPECTED_WORDLIST_SIZE))
             continue
 
-        print "%s_WORD_LOOKUP = %s" % (wordlist_name.upper(), repr(word_lookup))
+        print("%s_WORD_LOOKUP = %s" % (wordlist_name.upper(), repr(word_lookup)))
 
 
 if __name__ == "__main__":
