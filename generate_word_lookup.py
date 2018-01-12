@@ -17,7 +17,8 @@ import requests
 
 WORDLIST_URLS = {
     "diceware": "http://world.std.com/~reinhold/diceware.wordlist.asc",
-    "beale": "http://world.std.com/~reinhold/beale.wordlist.asc"
+    "beale": "http://world.std.com/~reinhold/beale.wordlist.asc",
+    "eff": "https://www.eff.org/files/2016/07/18/eff_large_wordlist.txt",
 }
 
 MAX_GPG_VERSION_STR = "1.4.19"
