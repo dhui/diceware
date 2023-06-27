@@ -6,20 +6,10 @@ import time
 
 import word_lookups
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 URANDOM = random.SystemRandom()
 NUM_DIE_ROLLS_PER_WORD = 5  # Diceware does 5 die rolls per word
-
-# Declares get_time() as a method that gets the time with microsecond precision across all platforms.
-# Code from Python's timeit module
-# http://hg.python.org/cpython/file/2.7/Lib/timeit.py
-if sys.platform == "win32":
-    # On Windows, the best timer is time.clock()
-    get_time = time.clock
-else:
-    # On most other platforms the best timer is time.time()
-    get_time = time.time
 
 
 def roll_dice(window, options, rolls_left):
@@ -35,17 +25,16 @@ def roll_dice(window, options, rolls_left):
     window.addstr(y, x, str(rolls_left))
     window.move(y, x)
 
-    start_time = get_time()
+    start_time_ns = time.monotonic_ns()
     window.getch()  # block until a key is pressed
-    stop_time = get_time()
+    stop_time_ns = time.monotonic_ns()
 
-    delta = abs(stop_time - start_time)  # TODO: use a monotonically increasing clock time (available in Python 3.3)
-    delta_microseconds = (delta - int(delta)) * 1000000
+    delta_ns = stop_time_ns - start_time_ns
     # Fraction should always be between [0, 1)
     # Using the last 3 digits which strikes a good balance between more digits
     # (more digits means more even distribution across buckets)
     # and delta time precision (higher precision, i.e. fewer digits, means more randomness and less keypress cadence)
-    fraction = float(delta_microseconds % 1000) / 1000
+    fraction = float(delta_ns % 1000) / 1000
     return int(fraction * 6) + 1
 
 
