@@ -6,7 +6,7 @@ import time
 
 import word_lookups
 
-__version__ = "2.1.0"
+__version__ = "2.1.1"
 
 URANDOM = random.SystemRandom()
 NUM_DIE_ROLLS_PER_WORD = 5  # Diceware does 5 die rolls per word
@@ -49,7 +49,7 @@ def generate_passphrases(window, options):
         word_lookup = word_lookups.BEALE_WORD_LOOKUP
 
     if not options.urandom:
-        window.addstr("Die rolls are calculated using the microseconds between your keypresses.\n")
+        window.addstr("Die rolls are calculated using the nanoseconds between your keypresses.\n")
 
     generate_passphrases = True
     while generate_passphrases:
