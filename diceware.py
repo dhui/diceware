@@ -1,14 +1,13 @@
 import argparse
 import curses
-import random
+import secrets
 import sys
 import time
 
 import word_lookups
 
-__version__ = "2.1.1"
+__version__ = "2.2.0"
 
-URANDOM = random.SystemRandom()
 NUM_DIE_ROLLS_PER_WORD = 5  # Diceware does 5 die rolls per word
 
 
@@ -16,8 +15,8 @@ def roll_dice(window, options, rolls_left):
     """
     Simulate a dice roll. Returns an integer value between 1 and 6 (inclusive)
     """
-    if options.urandom:
-        return URANDOM.randint(1, 6)
+    if options.csprng:
+        return secrets.randbelow(6) + 1
 
     # print the number of rolls left
     y, x = window.getyx()
@@ -48,14 +47,14 @@ def generate_passphrases(window, options):
     elif options.wordlist == "beale":
         word_lookup = word_lookups.BEALE_WORD_LOOKUP
 
-    if not options.urandom:
+    if not options.csprng:
         window.addstr("Die rolls are calculated using the nanoseconds between your keypresses.\n")
 
     generate_passphrases = True
     while generate_passphrases:
         rolls_left = options.num_words * NUM_DIE_ROLLS_PER_WORD
 
-        if not options.urandom:
+        if not options.csprng:
             window.addstr("Key presses left: ")
 
         words = []
@@ -67,7 +66,7 @@ def generate_passphrases(window, options):
 
             words.append(word_lookup[word_index])
 
-        if not options.urandom:
+        if not options.csprng:
             window.addstr("\n")
 
         window.addstr("Generated passphrase: %s\n" % " ".join(words))
@@ -89,8 +88,8 @@ def main():
                                      "See http://world.std.com/~reinhold/diceware.html")
     parser.add_argument("-n", "--num_words", dest="num_words", type=int, default=5,
                         help="The number of words in the passphrase to generate")
-    parser.add_argument("--urandom", dest="urandom", action="store_true",
-                        help="Use urandom (supposedly cryptographically secure, depending on your entropy pool)")
+    parser.add_argument("--csprng", dest="csprng", action="store_true",
+                        help="Use a Cryptographically Secure Random Number Generator (CSPRNG) to generate the password")
     parser.add_argument("--wordlist", dest="wordlist", default="eff", choices=("eff", "diceware", "beale"),
                         help="The wordlist to use. All wordlists provide the same level of security "
                         "but different levels of usability. The default (eff) is the most usable.")
